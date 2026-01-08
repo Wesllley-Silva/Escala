@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escala de Louvor e Mídia</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f4f7f6;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        h2 { text-align: center; color: var(--primary); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: auto; }
+        .card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 5px solid var(--accent); }
+        .card h3 { margin-top: 0; color: var(--accent); border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .info { margin: 8px 0; font-size: 0.9em; display: flex; justify-content: space-between; }
+        .label { font-weight: bold; color: #555; }
+        .date-badge { background: var(--primary); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+
+    <h2>Escala de Louvor e Mídia - Janeiro 2026</h2>
+    <div id="escala-grid" class="grid">Carregando escala...</div>
+
+    <script>
+        // COLE O LINK DO SEU CSV DO GOOGLE SHEETS AQUI
+        const SHEET_URL = 'SUA_URL_AQUI_DO_GOOGLE_SHEETS';
+
+        Papa.parse(SHEET_URL, {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const data = results.data;
+                const container = document.getElementById('escala-grid');
+                container.innerHTML = '';
+
+                data.forEach(item => {
+                    if(!item.DATA) return;
+                    const card = `
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between">
+                                <h3>${item.DIA}</h3>
+                                <span class="date-badge">${item.DATA} - ${item.HORÁRIO}</span>
+                            </div>
+                            <div class="info"><span class="label">Louvor:</span> <span>${item['EQUIPE LOUVOR']}</span></div>
+                            <div class="info"><span class="label">Vocal:</span> <span>${item['VOCAL/INSTRUMENTAL'] || '-'}</span></div>
+                            <hr>
+                            <div class="info"><span class="label">Som:</span> <span>${item.SOM}</span></div>
+                            <div class="info"><span class="label">Projeção:</span> <span>${item['PROJEÇÃO']}</span></div>
+                            <div class="info"><span class="label">Iluminação:</span> <span>${item['ILUMINAÇÃO']}</span></div>
+                            <div class="info"><span class="label">Transmissão:</span> <span>${item['TRANSMISSÃO']}</span></div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
